@@ -36,6 +36,18 @@ public class Students {
         this.academicyear = academicyear;
         this.faculty_Department = faculty_Department;
     }
+    public Students(String email, String password){
+        this.email = email;
+        this.password = password;
+    }
+
+    public Students(int student_ID, String first_name, String email, String phone, String password) {
+        this.student_ID = student_ID;
+        this.first_name = first_name;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+    }
 
     public int getStudent_ID() {
         return student_ID;
