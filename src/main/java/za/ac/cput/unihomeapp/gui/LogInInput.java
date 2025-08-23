@@ -1,18 +1,24 @@
 package za.ac.cput.unihomeapp.gui;
-import javax.swing.*;
-import java.awt.*;
-
 
 import javax.swing.*;
 import java.awt.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import za.ac.cput.unihomeapp.dao.StudentsDAO;
+import za.ac.cput.unihomeapp.domain.Students;
 
 /**
  *
  * @author jadar
  */
-public class LogInInput extends JFrame  {
+public class LogInInput extends JFrame {
 
-public LogInInput() {
+    StudentsDAO dao = new StudentsDAO();
+
+    public LogInInput() {
         // Frame setup
         JFrame frame = new JFrame("Login");
         frame.setSize(360, 640);
@@ -77,6 +83,7 @@ public LogInInput() {
         loginButton.setBackground(new Color(0, 153, 204));
         loginButton.setForeground(Color.WHITE);
         loginButton.setFont(new Font("Arial", Font.BOLD, 14));
+
         loginButton.setFocusPainted(false);
         loginCard.add(loginButton);
 
@@ -108,5 +115,16 @@ public LogInInput() {
 
         frame.setResizable(false);
         frame.setVisible(true);
+
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String email = emailField.getText();
+                String password = new String(passwordField.getPassword());
+                Students student = new Students(email, password);
+                //dao.signIn(student);
+
+            }
+        });
     }
+
 }
