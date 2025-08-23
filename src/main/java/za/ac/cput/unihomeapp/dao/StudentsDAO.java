@@ -18,7 +18,7 @@ import za.ac.cput.unihomeapp.domain.Students;
 public class StudentsDAO {
 
     private Connection con;
-    private Statement stmt;
+    private ResultSet rs;
     private PreparedStatement pstmt;
 
     public StudentsDAO() {
@@ -27,14 +27,29 @@ public class StudentsDAO {
     }
 
     public void signIn(Students student) {
-
+   String sql = "SELECT *FROM Students WHERE email = ? AND password = ?";
+        try {
+            pstmt = con.prepareStatement(sql);
+            pstmt.setString(1, student.getEmail());
+            pstmt.setString(2, student.getPassword());
+               
+              rs = pstmt.executeQuery();
+              if(rs.next()){
+                   JOptionPane.showMessageDialog(null, "Successfully Signed in");
+               
+              }else{
+                  JOptionPane.showMessageDialog(null, "Error occured try again");
+              }
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentsDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void signUp(Students student) {
         String sql = "INSERT INTO Students (first_name, email, student_ID, phone, password) VALUES (?, ?, ?, ?, ?)";
         int ok = -1;
         try {
-            stmt = con.prepareStatement(sql);
+            pstmt = con.prepareStatement(sql);
 
             pstmt.setString(1, student.getFirst_name());
             pstmt.setString(2, student.getEmail());
