@@ -10,4 +10,8 @@ package za.ac.cput.unihomeapp.dao;
  */
 public class StudentsDAO {
     
+    public void signIn(){
+      
+    }
+    
 }
