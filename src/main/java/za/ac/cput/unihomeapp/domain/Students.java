@@ -14,12 +14,14 @@ public class Students {
     private String email;
     private String phone;
     private String password;
-    private Date dob ;
+    private Date dob;
     private String gender;
-     private String current_Address;
+    private String current_Address;
     private int academicyear;
     private String faculty_Department;
-
+    public Students(){
+        
+    }
     public Students(int student_ID, int uni_ID, String first_name, String last_name, String email, String phone, String password, Date dob, String gender, String current_Address, int academicyear, String faculty_Department) {
         this.student_ID = student_ID;
         this.uni_ID = uni_ID;
