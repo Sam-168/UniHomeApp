@@ -1,14 +1,17 @@
 package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import za.ac.cput.unihomeapp.dao.StudentsDAO;
+import za.ac.cput.unihomeapp.domain.Students;
 
 
 /**
  *
  * @author ayren
  */
-public class Form extends JFrame {
-
+public class Form extends JFrame{
+    StudentsDAO dao = new StudentsDAO();
     public Form() {
         // Frame setup
         JFrame frame = new JFrame("Create New Account");
@@ -113,6 +116,25 @@ public class Form extends JFrame {
 
         frame.setResizable(false);
         frame.setVisible(true);
+        
+        signUpBtn.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                
+                String name = nameField.getText();
+                String email = emailField.getText();
+                String studentNumber = studentField.getText();
+                String contact = contactField.getText();
+                String password = new String(passwordField.getPassword());
+                
+                int student_ID = Integer.parseInt(studentNumber);
+                
+                Students student = new Students(student_ID,name, email, contact, password);
+                System.out.println("1" + student.getStudent_ID() + " 2 " + student.getFirst_name() + " 3 " +
+                        student.getEmail() + " 4 " + student.getPhone() + " 5 " +  student.getPassword());
+                //dao.signUp(student);
+                
+            }
+        });
 
     }
 }
