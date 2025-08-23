@@ -4,14 +4,52 @@
  */
 package za.ac.cput.unihomeapp.dao;
 
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import za.ac.cput.unihomeapp.connection.DBConnection;
+import za.ac.cput.unihomeapp.domain.Students;
+
 /**
  *
  * @author samuk
  */
 public class StudentsDAO {
-    
-    public void signIn(){
-      
+
+    private Connection con;
+    private Statement stmt;
+    private PreparedStatement pstmt;
+
+    public StudentsDAO() {
+
+        this.con = DBConnection.getConnection();
     }
-    
+
+    public void signIn(Students student) {
+
+    }
+
+    public void signUp(Students student) {
+        String sql = "INSERT INTO Students (first_name, email, student_ID, phone, password) VALUES (?, ?, ?, ?, ?)";
+        int ok = -1;
+        try {
+            stmt = con.prepareStatement(sql);
+
+            pstmt.setString(1, student.getFirst_name());
+            pstmt.setString(2, student.getEmail());
+            pstmt.setInt(3, student.getStudent_ID());
+            pstmt.setString(4, student.getPhone());
+            pstmt.setString(5, student.getPassword());
+            ok = pstmt.executeUpdate();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error Occurred during the writing to db");
+        }
+        if (ok > 0){
+            JOptionPane.showMessageDialog(null, "Successfully Signed up!!!");
+        }else{
+            JOptionPane.showMessageDialog(null, "Sign up was unsuccessful.");
+        }
+
+    }
 }
