@@ -1,17 +1,19 @@
 package za.ac.cput.unihomeapp.gui;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import za.ac.cput.unihomeapp.dao.StudentsDAO;
 import za.ac.cput.unihomeapp.domain.Students;
 
-
 /**
  *
  * @author ayren
  */
-public class Form extends JFrame{
+public class Form extends JFrame {
+
     StudentsDAO dao = new StudentsDAO();
+
     public Form() {
         // Frame setup
         JFrame frame = new JFrame("Create New Account");
@@ -116,24 +118,80 @@ public class Form extends JFrame{
 
         frame.setResizable(false);
         frame.setVisible(true);
-        
-        signUpBtn.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-                
-                String name = nameField.getText();
-                String email = emailField.getText();
-                String studentNumber = studentField.getText();
-                String contact = contactField.getText();
-                String password = new String(passwordField.getPassword());
-                
-                int student_ID = Integer.parseInt(studentNumber);
-                
-                Students student = new Students(student_ID,name, email, contact, password);
-                System.out.println("1" + student.getStudent_ID() + " 2 " + student.getFirst_name() + " 3 " +
-                        student.getEmail() + " 4 " + student.getPhone() + " 5 " +  student.getPassword());
-                //dao.signUp(student);
-                
+
+        signUpBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+
+                try {
+                    // Get input values
+                    String name = nameField.getText().trim();
+                    String email = emailField.getText().trim();
+                    String studentNumber = studentField.getText().trim();
+                    String contact = contactField.getText().trim();
+                    String password = new String(passwordField.getPassword()).trim();
+
+                    // 1. Check for empty fields
+                    if (name.isEmpty() || email.isEmpty() || studentNumber.isEmpty() || contact.isEmpty() || password.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please fill in all fields.");
+                        return;
+                    }
+
+                    // 2. Validate Student ID is numeric
+                    int student_ID;
+                    try {
+                        student_ID = Integer.parseInt(studentNumber);
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(null, "Student ID must be a number.");
+                        return;
+                    }
+
+                    // 3. Validate email format
+                    if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                        JOptionPane.showMessageDialog(null, "Invalid email format.");
+                        return;
+                    }
+
+                    // 4. Validate phone number (digits only, 10-15 characters)
+                    if (!contact.matches("\\d{10,15}")) {
+                        JOptionPane.showMessageDialog(null, "Invalid phone number. Must be 10-15 digits.");
+                        return;
+                    }
+
+                    // 5. Validate password strength (at least 6 characters, one uppercase, one number)
+                    if (!password.matches("^(?=.*[A-Z])(?=.*\\d).{6,}$")) {
+                        JOptionPane.showMessageDialog(null, "Password must be at least 6 characters, include one uppercase letter and one number.");
+                        return;
+                    }
+
+                    // Optional: Check if student ID or email already exists in DB
+                    if (dao.isStudentIDExists(student_ID)) {
+                        JOptionPane.showMessageDialog(null, "Student ID already exists.");
+                        return;
+                    }
+                    if (dao.isEmailExists(email)) {
+                        JOptionPane.showMessageDialog(null, "Email already registered.");
+                        return;
+                    }
+
+                    // Create student object
+                    Students student = new Students(student_ID, name, email, contact, password);
+
+                    // Debug print (optional)
+                    System.out.println("Student Info -> ID: " + student.getStudent_ID()
+                            + ", Name: " + student.getFirst_name()
+                            + ", Email: " + student.getEmail()
+                            + ", Phone: " + student.getPhone()
+                            + ", Password: " + student.getPassword());
+
+                    // Call DAO to sign up
+                    dao.signUp(student);
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Unexpected Error: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
             }
+
         });
 
     }
