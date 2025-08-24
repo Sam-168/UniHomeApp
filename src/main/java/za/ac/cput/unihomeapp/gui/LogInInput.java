@@ -118,13 +118,36 @@ public class LogInInput extends JFrame {
 
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String email = emailField.getText();
-                String password = new String(passwordField.getPassword());
-                Students student = new Students(email, password);
-                //dao.signIn(student);
+                try {
+                    String email = emailField.getText().trim();
+                    String password = new String(passwordField.getPassword()).trim();
 
+                    // Validation
+                    if (email.isEmpty() || password.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Please enter both email and password.");
+                        return;
+                    }
+
+                    Students student = new Students(email, password);
+                    Students loggedInStudent = dao.signIn(student);
+
+                    if (loggedInStudent != null) {
+                        JOptionPane.showMessageDialog(null,
+                                "Login successful! Welcome " + loggedInStudent.getFirst_name());
+                       new HomePage();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid email or password.");
+                    }
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Unexpected Error: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
             }
+
         });
     }
 
 }
+
+
