@@ -26,23 +26,36 @@ public class StudentsDAO {
         this.con = DBConnection.getConnection();
     }
 
-    public void signIn(Students student) {
-   String sql = "SELECT *FROM Students WHERE email = ? AND password = ?";
-        try {
-            pstmt = con.prepareStatement(sql);
+    public Students signIn(Students student) {
+        String sql = "SELECT student_ID, first_name, email, phone FROM Students WHERE email = ? AND password = ?";
+        Students loggedInStudent = null;
+
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
             pstmt.setString(1, student.getEmail());
-            pstmt.setString(2, student.getPassword());
-               
-              rs = pstmt.executeQuery();
-              if(rs.next()){
-                   JOptionPane.showMessageDialog(null, "Successfully Signed in");
-               
-              }else{
-                  JOptionPane.showMessageDialog(null, "Error occured try again");
-              }
-        } catch (SQLException ex) {
-            Logger.getLogger(StudentsDAO.class.getName()).log(Level.SEVERE, null, ex);
+            pstmt.setString(2, student.getPassword()); // hash before checking
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    
+                    loggedInStudent = new Students(
+                            rs.getInt("student_ID"),
+                            rs.getString("first_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            null 
+                    );
+                    JOptionPane.showMessageDialog(null, "Successfully Signed in!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid email or password.");
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database Error: " + e.getMessage());
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Unexpected Error: " + e.getMessage());
         }
+
+        return loggedInStudent;
     }
 
     public void signUp(Students student) {
@@ -60,11 +73,35 @@ public class StudentsDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Error Occurred during the writing to db");
         }
-        if (ok > 0){
+        if (ok > 0) {
             JOptionPane.showMessageDialog(null, "Successfully Signed up!!!");
-        }else{
+        } else {
             JOptionPane.showMessageDialog(null, "Sign up was unsuccessful.");
         }
 
+    }
+
+    public boolean isStudentIDExists(int studentID) {
+        String sql = "SELECT 1 FROM Students WHERE student_ID = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setInt(1, studentID);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next(); 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean isEmailExists(String email) {
+        String sql = "SELECT 1 FROM Students WHERE email = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next(); // true if record exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
