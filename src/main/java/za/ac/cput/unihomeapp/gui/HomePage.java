@@ -1,7 +1,7 @@
 package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
-
+import za.ac.cput.prtgui.Welcome;
 
 /**
  *
@@ -9,64 +9,55 @@ import java.awt.*;
  */
 public class HomePage extends JFrame  {
 
-    public  HomePage() {
-        JFrame frame = new JFrame("Dashboard");
-        frame.setSize(360, 640); // Mobile screen size
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(null); // Absolute layout for better positioning
+    public HomePage() {
+        // Frame setup
+        setTitle("Dashboard");
+        setSize(380, 640);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(null);
+        getContentPane().setBackground(new Color(5, 72, 107));
+        setResizable(false);
 
-        // 🔹 Set the full background color (blue)
-        frame.getContentPane().setBackground(new Color(5, 72, 107));
-
-        // Top Bar (Dark Blue Background)
+        // ===== Top Panel =====
         JPanel topPanel = new JPanel();
         topPanel.setBackground(new Color(5, 72, 107));
-        topPanel.setBounds(0, 0, 360, 100);
+        topPanel.setBounds(0, 0, 380, 100);
         topPanel.setLayout(null);
 
-        // Welcome Text
         JLabel welcomeLabel = new JLabel("Welcome back, John");
         welcomeLabel.setForeground(Color.WHITE);
-        welcomeLabel.setBounds(10, 10, 200, 20);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        welcomeLabel.setBounds(20, 10, 250, 25);
         topPanel.add(welcomeLabel);
 
-        // Icons
-        JLabel userIcon = new JLabel("👤");
-        JLabel bellIcon = new JLabel("🔔");
-        JLabel searchIcon = new JLabel("🔍");
-        userIcon.setBounds(10, 40, 30, 30);
-        bellIcon.setBounds(40, 40, 30, 30);
-        searchIcon.setBounds(70, 40, 30, 30);
-        topPanel.add(userIcon);
-        topPanel.add(bellIcon);
-        topPanel.add(searchIcon);
-
-        // Dashboard Text
         JLabel dashboardLabel = new JLabel("Dashboard");
         dashboardLabel.setForeground(Color.WHITE);
         dashboardLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        dashboardLabel.setBounds(250, 10, 100, 30);
+        dashboardLabel.setBounds(20, 50, 200, 30);
         topPanel.add(dashboardLabel);
 
-        // Accommodation Image I DON'T KNOW WHERE THIS IMAGE IS STORED
-        /*
-        ImageIcon imageIcon = new ImageIcon(Welcome.class.getResource("/accommodation.png")); // Replace with your image file
-        Image img = imageIcon.getImage().getScaledInstance(320, 180, Image.SCALE_SMOOTH);
+        add(topPanel);
+
+        // ===== Accommodation Image =====
+        ImageIcon imgIcon = new ImageIcon(Welcome.class.getResource("/accommodation.png"));
+        Image img = imgIcon.getImage().getScaledInstance(320, 180, Image.SCALE_SMOOTH);
         JLabel imageLabel = new JLabel(new ImageIcon(img));
-        imageLabel.setBounds(20, 110, 320, 180);
+        imageLabel.setBounds(30, 110, 320, 180);
         imageLabel.setLayout(null);
-        */
+
         JLabel overlayText = new JLabel("VIEW ACCOMMODATIONS");
         overlayText.setForeground(Color.WHITE);
         overlayText.setFont(new Font("Arial", Font.BOLD, 14));
         overlayText.setBounds(10, 140, 250, 30);
-        //imageLabel.add(overlayText);
+        imageLabel.add(overlayText);
 
-        // Bottom Card (Track Application)
+        add(imageLabel);
+
+        // ===== Bottom Card =====
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(null);
         bottomPanel.setBackground(new Color(230, 230, 230));
-        bottomPanel.setBounds(20, 310, 320, 160);
+        bottomPanel.setBounds(30, 310, 320, 160);
         bottomPanel.setBorder(BorderFactory.createLineBorder(Color.darkGray, 1));
 
         JLabel instructionText = new JLabel("<html><center>Check your application progress<br>and make sure your documents are approved</center></html>");
@@ -81,12 +72,37 @@ public class HomePage extends JFrame  {
         trackButton.setFocusPainted(false);
         bottomPanel.add(trackButton);
 
-        // Add all to frame
-        frame.add(topPanel);
-        //frame.add(imageLabel);
-        frame.add(bottomPanel);
+        add(bottomPanel);
 
-        frame.setResizable(false);
-        frame.setVisible(true);
+        // ===== Bottom Navigation Bar =====
+        JPanel navBar = new JPanel();
+        navBar.setBackground(Color.WHITE);
+        navBar.setBounds(0, 550, 380, 60);
+        navBar.setLayout(new GridLayout(1, 3));
+
+        // Buttons with icons
+        JButton userButton = createIconButton("/home.png");
+        JButton bellButton = createIconButton("/bell.jpg");
+        JButton searchButton = createIconButton("/search.jpg");
+
+        navBar.add(userButton);
+        navBar.add(bellButton);
+        navBar.add(searchButton);
+
+        add(navBar);
+
+        setVisible(true);
+    }
+
+    private JButton createIconButton(String iconPath) {
+        ImageIcon icon = new ImageIcon(Welcome.class.getResource(iconPath));
+        Image img = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        JButton btn = new JButton(new ImageIcon(img));
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(false);
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return btn;
     }
 }
