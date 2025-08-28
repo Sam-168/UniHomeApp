@@ -1,7 +1,6 @@
 package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
-import za.ac.cput.prtgui.Welcome;
 
 /**
  *
