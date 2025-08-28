@@ -1,4 +1,4 @@
-package ac.za.cput.unihomeapp.gui;
+package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
 /**
