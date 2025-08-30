@@ -1,4 +1,4 @@
-package ac.za.cput.unihomeapp.gui;
+package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
 /**
@@ -10,23 +10,23 @@ public class LandLordLogin extends JFrame  {
     public LandLordLogin() {
         // Frame setup
         JFrame frame = new JFrame("Land Lord Login");
-        frame.setSize(100, 640);
+        frame.setSize(380, 640);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
         frame.getContentPane().setBackground(new Color(5, 72, 107)); // Dark blue background
 
         // Top "Login" title
-        JLabel loginTitle = new JLabel(" Land Lord Login");
-        loginTitle.setFont(new Font("Arial", Font.BOLD, 28));
+        JLabel loginTitle = new JLabel("Landlord Login");
+        loginTitle.setFont(new Font("Arial", Font.BOLD, 24));
         loginTitle.setForeground(Color.WHITE);
-        loginTitle.setBounds(130, 30, 200, 40);
+        loginTitle.setBounds(110, 40, 200, 40);
         frame.add(loginTitle);
 
         // Subtext
         JLabel subText = new JLabel("Sign in to continue.");
         subText.setFont(new Font("Arial", Font.PLAIN, 12));
         subText.setForeground(Color.WHITE);
-        subText.setBounds(120, 65, 200, 20);
+        subText.setBounds(120, 70, 200, 20);
         frame.add(subText);
 
         // White Login Card
@@ -100,7 +100,7 @@ public class LandLordLogin extends JFrame  {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent e) {
                 frame.dispose(); // close login window
-                new HomePage(); // open homepage
+                new WelcomeGUI(); // open welcome page
             }
         });
         loginCard.add(backLabel);

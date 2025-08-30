@@ -1,6 +1,8 @@
-package ac.za.cput.unihomeapp.gui;
+package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
+
+
 /**
  *
  * @author ayren
@@ -9,7 +11,7 @@ public class LandLordForm extends JFrame {
 
     public LandLordForm() {
         // Frame setup
-        JFrame frame = new JFrame("Create New Account");
+        JFrame frame = new JFrame("REGISTER AS A LANDLORD");
         frame.setSize(380, 640);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
@@ -17,14 +19,14 @@ public class LandLordForm extends JFrame {
 
         // Main white panel
         JPanel panel = new JPanel();
-        panel.setBounds(20, 120, 320, 400);
+        panel.setBounds(30, 110, 320, 320);
         panel.setBackground(Color.WHITE);
         panel.setLayout(null);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         frame.add(panel);
 
         // Title
-        JLabel titleLabel = new JLabel("Create new Account");
+        JLabel titleLabel = new JLabel("Create New Account");
         titleLabel.setBounds(90, 30, 200, 60);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         titleLabel.setForeground(Color.WHITE);
@@ -60,30 +62,30 @@ public class LandLordForm extends JFrame {
         panel.add(emailField);
         
         // Contact Number
-        JLabel contactLabel = new JLabel("CONTACT NUMBER");
+        JLabel studentLabel = new JLabel("CONTACT NUMBER");
+        studentLabel.setBounds(20, 140, 150, 20);
+        panel.add(studentLabel);
+
+        JTextField studentField = new JTextField("123456789");
+        studentField.setBounds(20, 160, 280, 30);
+        studentField.setBackground(new Color(230, 230, 230));
+        studentField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panel.add(studentField);
+
+        // Password
+        JLabel contactLabel = new JLabel("PASSWORD");
         contactLabel.setBounds(20, 200, 150, 20);
         panel.add(contactLabel);
 
-        JTextField contactField = new JTextField("987654321");
+        JTextField contactField = new JTextField("*****");
         contactField.setBounds(20, 220, 280, 30);
         contactField.setBackground(new Color(230, 230, 230));
         contactField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         panel.add(contactField);
 
-        // Password
-        JLabel passwordLabel = new JLabel("PASSWORD");
-        passwordLabel.setBounds(20, 260, 100, 20);
-        panel.add(passwordLabel);
-
-        JPasswordField passwordField = new JPasswordField("*");
-        passwordField.setBounds(20, 280, 280, 30);
-        passwordField.setBackground(new Color(230, 230, 230));
-        passwordField.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        panel.add(passwordField);
-
         // Sign up button
         JButton signUpBtn = new JButton("Sign up");
-        signUpBtn.setBounds(20, 330, 280, 40);
+        signUpBtn.setBounds(70, 260, 190, 35);
         signUpBtn.setBackground(new Color(0, 153, 204)); // teal-ish
         signUpBtn.setForeground(Color.WHITE);
         signUpBtn.setFocusPainted(false);
