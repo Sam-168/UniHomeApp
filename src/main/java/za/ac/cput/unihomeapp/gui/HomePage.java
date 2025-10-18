@@ -36,7 +36,7 @@ public class HomePage extends JFrame  {
         topPanel.add(dashboardLabel);
 
         add(topPanel);
-
+        /*
         // ===== Accommodation Image =====
         ImageIcon imgIcon = new ImageIcon(Welcome.class.getResource("/accommodation.png"));
         Image img = imgIcon.getImage().getScaledInstance(320, 180, Image.SCALE_SMOOTH);
@@ -51,7 +51,7 @@ public class HomePage extends JFrame  {
         imageLabel.add(overlayText);
 
         add(imageLabel);
-
+        */
         // ===== Bottom Card =====
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(null);
@@ -78,7 +78,7 @@ public class HomePage extends JFrame  {
         navBar.setBackground(Color.WHITE);
         navBar.setBounds(0, 550, 380, 60);
         navBar.setLayout(new GridLayout(1, 3));
-
+        /*
         // Buttons with icons
         JButton userButton = createIconButton("/home.png");
         JButton bellButton = createIconButton("/bell.jpg");
@@ -87,12 +87,12 @@ public class HomePage extends JFrame  {
         navBar.add(userButton);
         navBar.add(bellButton);
         navBar.add(searchButton);
-
+        */
         add(navBar);
 
         setVisible(true);
     }
-
+    /*
     private JButton createIconButton(String iconPath) {
         ImageIcon icon = new ImageIcon(Welcome.class.getResource(iconPath));
         Image img = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
@@ -104,4 +104,5 @@ public class HomePage extends JFrame  {
         btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
         return btn;
     }
+    */
 }
