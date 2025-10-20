@@ -3,6 +3,9 @@ package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import za.ac.cput.unihomeapp.dao.ApplicationDAO;
+import za.ac.cput.unihomeapp.domain.Application;
 /**
  *
  * @author ayren
@@ -17,7 +20,7 @@ public class ApplicationForm extends JFrame {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(null);
         frame.getContentPane().setBackground(new Color(5, 72, 107)); // dark blue background
-// --- Header label ---
+        // --- Header label ---
         JLabel headerLabel = new JLabel("Apply for Accommodation");
         headerLabel.setForeground(Color.WHITE);
         headerLabel.setFont(new Font("Arial", Font.BOLD, 22));
@@ -121,6 +124,73 @@ public class ApplicationForm extends JFrame {
         applyBtn.setFont(new Font("Arial", Font.BOLD, 15));
         applyBtn.setFocusPainted(false);
         panel.add(applyBtn);
+        
+        addBtn.addActionListener(e -> {
+            String subject = JOptionPane.showInputDialog(frame, "Enter Subject Name:");
+            if (subject == null || subject.trim().isEmpty()) {
+                return;
+            }
+            String markStr = JOptionPane.showInputDialog(frame, "Enter Mark:");
+            try {
+                double mark = Double.parseDouble(markStr);
+                tableModel.addRow(new Object[]{subject, mark});
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid mark entered!", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        removeBtn.addActionListener(e -> {
+            int selectedRow = subjectTable.getSelectedRow();
+            if (selectedRow != -1) {
+                tableModel.removeRow(selectedRow);
+            } else {
+                JOptionPane.showMessageDialog(frame, "Select a subject to remove", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        });
+        
+        
+        applyBtn.addActionListener(e -> {
+            try {
+                String fullName = nameField.getText().trim();
+                String studentNum = studentNumField.getText().trim();
+                String gender = (String) genderCombo.getSelectedItem();
+                String campus = (String) campusCombo.getSelectedItem();
+
+                if (fullName.isEmpty() || studentNum.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Full Name and Student Number are required!", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                // Collect subjects
+                ArrayList<String> subjects = new ArrayList<>();
+                ArrayList<Double> marks = new ArrayList<>();
+                for (int i = 0; i < tableModel.getRowCount(); i++) {
+                    subjects.add((String) tableModel.getValueAt(i, 0));
+                    marks.add((Double) tableModel.getValueAt(i, 1));
+                }
+                int studentId =Integer.parseInt(studentNum);
+                // Create application object
+                Application app = new Application(studentId, fullName, gender, campus, subjects, marks);
+
+                // Save to DB
+                ApplicationDAO dao = new ApplicationDAO();
+                boolean success = dao.saveApplication(app);
+                
+                if (success) {
+                    JOptionPane.showMessageDialog(frame, "Application submitted successfully!");
+                    frame.dispose();
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Failed to submit application!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "An error occurred: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        });
+        
+       
 
         // --- Final setup ---
         frame.setResizable(false);
@@ -146,5 +216,8 @@ public class ApplicationForm extends JFrame {
             g.setColor(color);
             g.fillOval(0, 0, getWidth(), getHeight());
         }
+    }
+    public static void main(String[] args) {
+        new ApplicationForm();
     }
 }
