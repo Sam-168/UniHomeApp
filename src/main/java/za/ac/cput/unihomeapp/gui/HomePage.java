@@ -74,7 +74,7 @@ public class HomePage extends JFrame  {
         trackButton.setFocusPainted(false);
         trackButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new TrackApplication ();
+                //new TrackApplication ();
             }
 
         });

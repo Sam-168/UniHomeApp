@@ -7,6 +7,6 @@ package za.ac.cput.unihomeapp.gui;
 public class TrackApp {
     
      public static void main(String[] args) {
-        new TrackApplication ();
+        //new TrackApplication ();
     }
 }
