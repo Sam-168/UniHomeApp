@@ -67,7 +67,7 @@ public class AdminDash extends JFrame {
                 int applicationId = getApplicationIdFromRow(selectedRow); // helper method
                 ApplicationDAO dao = new ApplicationDAO();
                 if (dao.updateApplicationStatus(applicationId, "Accepted")) {
-                    refreshApplications((DefaultTableModel) table.getModel());
+                    loadApplicationsToTable();
                     JOptionPane.showMessageDialog(this, "Application approved!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update status.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -90,7 +90,7 @@ public class AdminDash extends JFrame {
                 int applicationId = getApplicationIdFromRow(selectedRow);
                 ApplicationDAO dao = new ApplicationDAO();
                 if (dao.updateApplicationStatus(applicationId, "Rejected")) {
-                    refreshApplications((DefaultTableModel) table.getModel());
+                   loadApplicationsToTable();
                     JOptionPane.showMessageDialog(this, "Application rejected!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Failed to update status.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -106,7 +106,7 @@ public class AdminDash extends JFrame {
         refreshBtn.setBackground(new Color(0, 153, 204));
         refreshBtn.setForeground(Color.WHITE);
         refreshBtn.setFont(new Font("Arial", Font.BOLD, 14));
-        refreshBtn.addActionListener(e -> refreshApplications(model));
+        refreshBtn.addActionListener(e ->loadApplicationsToTable());
 
         refreshBtn.setFocusPainted(false);
         frame.add(refreshBtn);
@@ -119,33 +119,41 @@ public class AdminDash extends JFrame {
         bottomCircle.setBounds(440, 320, 160, 160);
         frame.add(bottomCircle);
         //load data from db
-        refreshApplications(model);
+        loadApplicationsToTable();
         // Final frame setup
         frame.setResizable(false);
         frame.setVisible(true);
     }
 
     private int getApplicationIdFromRow(int row) {
-        return (int) ((DefaultTableModel) table.getModel()).getValueAt(row, 0);
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    // Even if the column is hidden, the model still holds it
+    return (int) model.getValueAt(row, 0);
+}
+
+    private void loadApplicationsToTable() {
+    ApplicationDAO dao = new ApplicationDAO();
+    ArrayList<Application> applications = dao.getAllApplications();
+
+    DefaultTableModel model = (DefaultTableModel) table.getModel();
+    model.setRowCount(0); // clear existing rows first
+
+    for (Application app : applications) {
+        // Add app_id as hidden data, not displayed in visible columns
+        model.addRow(new Object[]{
+            app.getApplicationId(), // Hidden, you’ll see below we hide it
+            app.getStudentId(),
+            app.getAverage(),
+            app.getCampus(),
+            app.getStatus()
+        });
     }
 
-    private void refreshApplications(DefaultTableModel model) {
-        model.setRowCount(0);
-        ApplicationDAO dao = new ApplicationDAO();
-        ArrayList<Application> apps = dao.getAllApplications();
+    // Hide column 0 (application_id) so it doesn’t show in the table
+    if (table.getColumnCount() > 5) return; // prevent duplicate hiding
+    table.removeColumn(table.getColumnModel().getColumn(0));
+}
 
-        for (Application app : apps) {
-            Object[] row = {
-                app.getApplicationId(),
-                app.getFullName(),
-                app.getStudentId(),
-                String.format("%.2f", app.getAverage()), // Format average
-                app.getCampus(),
-                app.getStatus()
-            };
-            model.addRow(row);
-        }
-    }
     public static void main(String[] args) {
         new AdminDash();
     }

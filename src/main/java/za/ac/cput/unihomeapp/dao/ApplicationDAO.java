@@ -27,7 +27,7 @@ public class ApplicationDAO {
     }
 
     public boolean saveApplication(Application app) {
-    String sqlApplication = "INSERT INTO Applications (student_id, gender, campus, avarage, status) VALUES (?, ?, ?, ?, ?)";
+    String sqlApplication = "INSERT INTO Applications (student_id, gender, campus, average, status) VALUES (?, ?, ?, ?, ?)";
     String sqlSubjects = "INSERT INTO Subjects (application_id, subject_name, mark) VALUES (?, ?, ?)";
 
     try {
@@ -101,14 +101,12 @@ public class ApplicationDAO {
 
     String sql = """
         SELECT 
-            a.application_id,
-            a.student_id,
-            CONCAT(s.first_name, ' ', s.last_name) AS full_name,
-            a.avarage,
-            a.campus,
-            a.status
-        FROM Applications a
-        JOIN Students s ON a.student_id = s.student_id
+            application_id,
+            student_id,
+            average,
+            campus,
+            status
+        FROM Applications
     """;
 
     try (PreparedStatement pstmt = con.prepareStatement(sql);
@@ -118,8 +116,7 @@ public class ApplicationDAO {
             Application app = new Application();
             app.setApplicationId(rs.getInt("application_id"));
             app.setStudentId(rs.getInt("student_id"));
-            app.setFullName(rs.getString("full_name"));
-            app.setAverage(rs.getDouble("avarage"));
+            app.setAverage(rs.getDouble("average"));
             app.setCampus(rs.getString("campus"));
             app.setStatus(rs.getString("status"));
 
@@ -132,18 +129,22 @@ public class ApplicationDAO {
 
     return applications;
 }
-   public boolean updateApplicationStatus(int applicationId, String status) {
+   public boolean updateApplicationStatus(int applicationId, String newStatus) {
     String sql = "UPDATE Applications SET status = ? WHERE application_id = ?";
+
     try (PreparedStatement pstmt = con.prepareStatement(sql)) {
-        pstmt.setString(1, status);
+        pstmt.setString(1, newStatus);
         pstmt.setInt(2, applicationId);
-        int affected = pstmt.executeUpdate();
-        return affected > 0;
+
+        int rowsUpdated = pstmt.executeUpdate();
+        return rowsUpdated > 0;
+
     } catch (SQLException e) {
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error updating status: " + e.getMessage());
         return false;
     }
 }
+
    
 
 }

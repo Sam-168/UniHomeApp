@@ -147,7 +147,7 @@ public class LogInInput extends JFrame {
             if (loggedInAdmin != null) {
                 JOptionPane.showMessageDialog(null,
                         "Admin login successful! Welcome " + loggedInAdmin.getUsername());
-                new AdminDashboard(); // Admin GUI
+                new AdminDash(); // Admin GUI
                 frame.dispose();
                 return;
             }
