@@ -146,5 +146,8 @@ public class AdminDash extends JFrame {
             model.addRow(row);
         }
     }
+    public static void main(String[] args) {
+        new AdminDash();
+    }
 
 }

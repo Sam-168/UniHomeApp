@@ -3,11 +3,11 @@ package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
 
-import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import za.ac.cput.unihomeapp.dao.AdminDAO;
 import za.ac.cput.unihomeapp.dao.StudentsDAO;
+import za.ac.cput.unihomeapp.domain.Admin;
 import za.ac.cput.unihomeapp.domain.Students;
 
 /**
@@ -119,30 +119,46 @@ public class LogInInput extends JFrame {
         loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String email = emailField.getText().trim();
-                    String password = new String(passwordField.getPassword()).trim();
+            String emailInput = emailField.getText().trim();
+            String password = new String(passwordField.getPassword()).trim();
 
-                    // Validation
-                    if (email.isEmpty() || password.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "Please enter both email and password.");
-                        return;
-                    }
+            if (emailInput.isEmpty() || password.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Please enter both email and password.");
+                return;
+            }
 
-                    Students student = new Students(email, password);
-                    Students loggedInStudent = dao.signIn(student);
+            
+            Students student = new Students(emailInput, password);
+            Students loggedInStudent = dao.signIn(student);
 
-                    if (loggedInStudent != null) {
-                        JOptionPane.showMessageDialog(null,
-                                "Login successful! Welcome " + loggedInStudent.getFirst_name());
-                       new HomePage();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Invalid email or password.");
-                    }
+            if (loggedInStudent != null) {
+                JOptionPane.showMessageDialog(null,
+                        "Student login successful! Welcome " + loggedInStudent.getFirst_name());
+                new HomePage(); 
+                frame.dispose();
+                return;
+            }
 
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Unexpected Error: " + ex.getMessage());
-                    ex.printStackTrace();
-                }
+            // --- Check Admin ---
+            AdminDAO adminDAO = new AdminDAO();
+            Admin admin = new Admin(emailInput, password); // use email field as username
+            Admin loggedInAdmin = adminDAO.signIn(admin);
+
+            if (loggedInAdmin != null) {
+                JOptionPane.showMessageDialog(null,
+                        "Admin login successful! Welcome " + loggedInAdmin.getUsername());
+                new AdminDashboard(); // Admin GUI
+                frame.dispose();
+                return;
+            }
+
+            // If neither found
+            JOptionPane.showMessageDialog(null, "Invalid email or password.");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Unexpected Error: " + ex.getMessage());
+            ex.printStackTrace();
+        }
             }
 
         });

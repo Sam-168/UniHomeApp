@@ -1,6 +1,9 @@
 package za.ac.cput.unihomeapp.gui;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import za.ac.cput.unihomeapp.domain.Students;
 
 /**
  *
@@ -69,6 +72,12 @@ public class HomePage extends JFrame  {
         trackButton.setBackground(new Color(0, 153, 204));
         trackButton.setForeground(Color.WHITE);
         trackButton.setFocusPainted(false);
+        trackButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new TrackApplication ();
+            }
+
+        });
         bottomPanel.add(trackButton);
 
         add(bottomPanel);
