@@ -1,13 +1,19 @@
-
 package za.ac.cput.unihomeapp.gui;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.util.ArrayList;
+import za.ac.cput.unihomeapp.dao.ApplicationDAO;
+import za.ac.cput.unihomeapp.domain.Application;
+
 /**
  *
  * @author jadar
  */
-public class AdminDash  extends JFrame {
+public class AdminDash extends JFrame {
+
+    private JTable table;
 
     public AdminDash() {
         // Frame setup
@@ -26,14 +32,18 @@ public class AdminDash  extends JFrame {
         // Table columns
         String[] columns = {"Student Name", "Student Number", "Average", "Campus", "Status"};
         Object[][] data = {
-                {"", "", "", "", ""},
-                {"", "", "", "", ""},
-                {"", "", "", "", ""}
+            {"", "", "", "", ""},
+            {"", "", "", "", ""},
+            {"", "", "", "", ""}
         };
 
         // Table model and table setup
         DefaultTableModel model = new DefaultTableModel(data, columns);
-        JTable table = new JTable(model);
+        table = new JTable(model);
+        table.getColumnModel().getColumn(0).setMinWidth(0);
+        table.getColumnModel().getColumn(0).setMaxWidth(0);
+        table.getColumnModel().getColumn(0).setWidth(0);
+        table.getColumnModel().getColumn(0).setPreferredWidth(0);
         table.setFont(new Font("SansSerif", Font.PLAIN, 14));
         table.setRowHeight(25);
         table.setBackground(Color.WHITE);
@@ -43,7 +53,7 @@ public class AdminDash  extends JFrame {
         JScrollPane scrollPane = new JScrollPane(table);
         scrollPane.setBounds(50, 100, 500, 200);
         frame.add(scrollPane);
-        
+
         // Buttons
         JButton approveBtn = new JButton("Approve");
         approveBtn.setBounds(100, 340, 120, 35);
@@ -51,6 +61,21 @@ public class AdminDash  extends JFrame {
         approveBtn.setForeground(Color.WHITE);
         approveBtn.setFont(new Font("Arial", Font.BOLD, 14));
         approveBtn.setFocusPainted(false);
+        approveBtn.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                int applicationId = getApplicationIdFromRow(selectedRow); // helper method
+                ApplicationDAO dao = new ApplicationDAO();
+                if (dao.updateApplicationStatus(applicationId, "Accepted")) {
+                    refreshApplications((DefaultTableModel) table.getModel());
+                    JOptionPane.showMessageDialog(this, "Application approved!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update status.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Select an application to approve.", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        });
         frame.add(approveBtn);
 
         JButton rejectBtn = new JButton("Reject");
@@ -59,6 +84,21 @@ public class AdminDash  extends JFrame {
         rejectBtn.setForeground(Color.WHITE);
         rejectBtn.setFont(new Font("Arial", Font.BOLD, 14));
         rejectBtn.setFocusPainted(false);
+        rejectBtn.addActionListener(e -> {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                int applicationId = getApplicationIdFromRow(selectedRow);
+                ApplicationDAO dao = new ApplicationDAO();
+                if (dao.updateApplicationStatus(applicationId, "Rejected")) {
+                    refreshApplications((DefaultTableModel) table.getModel());
+                    JOptionPane.showMessageDialog(this, "Application rejected!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update status.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Select an application to reject.", "Warning", JOptionPane.WARNING_MESSAGE);
+            }
+        });
         frame.add(rejectBtn);
 
         JButton refreshBtn = new JButton("Refresh");
@@ -66,6 +106,8 @@ public class AdminDash  extends JFrame {
         refreshBtn.setBackground(new Color(0, 153, 204));
         refreshBtn.setForeground(Color.WHITE);
         refreshBtn.setFont(new Font("Arial", Font.BOLD, 14));
+        refreshBtn.addActionListener(e -> refreshApplications(model));
+
         refreshBtn.setFocusPainted(false);
         frame.add(refreshBtn);
         // Background decorative circles
@@ -76,12 +118,33 @@ public class AdminDash  extends JFrame {
         CirclePanel bottomCircle = new CirclePanel(new Color(95, 239, 241));
         bottomCircle.setBounds(440, 320, 160, 160);
         frame.add(bottomCircle);
-
-        
-
+        //load data from db
+        refreshApplications(model);
         // Final frame setup
         frame.setResizable(false);
         frame.setVisible(true);
+    }
+
+    private int getApplicationIdFromRow(int row) {
+        return (int) ((DefaultTableModel) table.getModel()).getValueAt(row, 0);
+    }
+
+    private void refreshApplications(DefaultTableModel model) {
+        model.setRowCount(0);
+        ApplicationDAO dao = new ApplicationDAO();
+        ArrayList<Application> apps = dao.getAllApplications();
+
+        for (Application app : apps) {
+            Object[] row = {
+                app.getApplicationId(),
+                app.getFullName(),
+                app.getStudentId(),
+                String.format("%.2f", app.getAverage()), // Format average
+                app.getCampus(),
+                app.getStatus()
+            };
+            model.addRow(row);
+        }
     }
 
 }
